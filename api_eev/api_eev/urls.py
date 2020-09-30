@@ -22,6 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('events/', views.EventList.as_view()),
     path('events/<int:pk>', views.EventDetail.as_view()),
+    path('participates/', views.ParticipateCreate.as_view()),
+    path('participates/<int:pk>', views.ParticipateDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
