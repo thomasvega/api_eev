@@ -32,55 +32,56 @@ class Participate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published', auto_now_add=True)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Poll(models.Model):
+    question = models.CharField(max_length=100)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    pub_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.question_text
+        return self.question
+
 
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    
+    poll = models.ForeignKey(Poll, related_name='choices', on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=100)
+
     def __str__(self):
         return self.choice_text
-    
+
+
 class Vote(models.Model):
-    vote = models.BooleanField('Vote', False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, related_name='votes', on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    voted_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'User {self.user.first_name} voted {self.vote}'
+    class Meta:
+        unique_together= ('poll', 'voted_by')
 
-class Picture(models.Model):
-    name = models.CharField(max_length=200)
-    url = models.CharField(max_length=200)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+# class Picture(models.Model):
+#     name = models.CharField(max_length=200)
+#     url = models.CharField(max_length=200)
+#     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
-class Ride(models.Model):
-    address_start = models.CharField(max_length=200)
-    address_end = models.CharField(max_length=200)
-    datetime_start = models.DateTimeField()
-    datetime_end = models.DateTimeField()
+# class Ride(models.Model):
+#     address_start = models.CharField(max_length=200)
+#     address_end = models.CharField(max_length=200)
+#     datetime_start = models.DateTimeField()
+#     datetime_end = models.DateTimeField()
 
 
-class CarPooling(models.Model):
-    driver = models.BooleanField('Driver', False)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
+# class CarPooling(models.Model):
+#     driver = models.BooleanField('Driver', False)
+#     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
 
-    def __str__(self):
-        if self.driver:
-            res = f'User {self.user.first_name} will drive'
-        else:
-            res = f'User {self.user.first_name} will be passenger'
-        return res
+#     def __str__(self):
+#         if self.driver:
+#             res = f'User {self.user.first_name} will drive'
+#         else:
+#             res = f'User {self.user.first_name} will be passenger'
+#         return res

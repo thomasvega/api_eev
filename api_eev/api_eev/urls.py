@@ -20,10 +20,27 @@ from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    # EVENTS
     path('events/', views.EventList.as_view()),
     path('events/<int:pk>', views.EventDetail.as_view()),
+    
+    # PARTICIPATE 
     path('participates/', views.ParticipateCreate.as_view()),
     path('participates/<int:pk>', views.ParticipateDetail.as_view()),
+    
+    # QUESTIONS
+    path('questions/', views.QuestionListCreate.as_view()),
+    path('questions/<int:pk>', views.QuestionDetail.as_view()),
+
+    # CHOICES
+    path('choices/', views.ChoiceListCreate.as_view()),
+    path('choices/<int:pk>', views.ChoiceDetail.as_view()),
+
+    # Vote
+    path('votes/', views.VoteListCreate.as_view()),
+    path('votes/<int:pk>', views.VoteDetail.as_view()),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
