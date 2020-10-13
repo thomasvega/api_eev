@@ -10,7 +10,7 @@ class Module(models.Model):
         ('TriCount', 'TriCount'),
         ('Poll', 'Poll'),
     )
-    name = models.CharField(max_length=25, choices=MODULES)
+    name = models.CharField(max_length=10, choices=MODULES)
 
     def __str__(self):
         return self.name
@@ -20,16 +20,22 @@ class Event(models.Model):
     description = models.CharField(max_length=250)
     datetime_start = models.DateTimeField()
     datetime_end = models.DateTimeField()
-    users = models.ManyToManyField(User, through='Participate')
-    modules = models.ManyToManyField(Module)
+    users = models.ManyToManyField(User, through='Guest')
+    modules = models.ManyToManyField(Module, related_name='Modules')
 
     def __str__(self):
         return self.title
 
-class Participate(models.Model):
-    creator = models.BooleanField(False)
+class Guest(models.Model):
+    creator = models.BooleanField("Creator of the event")
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together= ('event', 'user')
+
+    def __str__(self):
+        return f'{self.event.title} has {self.user.username} as participant'
 
 
 class Poll(models.Model):

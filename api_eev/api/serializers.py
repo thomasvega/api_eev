@@ -6,39 +6,8 @@ from django.utils import timezone
 
 from rest_framework.authtoken.models import Token
 
-from .models import Event, Participate, Poll, Choice, Vote
+from .models import Module, Event, Guest, Poll, Choice, Vote
 
-
-class EventSerializer(serializers.ModelSerializer):
-    users = serializers.SlugRelatedField(
-        many=True, 
-        read_only=True,
-        slug_field='first_name'
-    )
-    modules = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='name'
-    )
-
-    def validate(self, data):
-        """
-        Check that the end if after the start.
-        """
-        if data['datetime_start'] < timezone.now():
-            raise serializers.ValidationError("La date de début ne peux pas être antérieur à la date du jour")
-        if data['datetime_end'] < data['datetime_start']:
-            raise serializers.ValidationError("La date de fin doit être après la date de début")
-        return data
-
-    class Meta:
-        model = Event
-        fields = ['title', 'description', 'datetime_start', 'datetime_end', 'users', 'modules']
-
-class ParticipateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Participate
-        fields = ['creator', 'event', 'user']
     
 class VoteSerializer(serializers.ModelSerializer):
     def validate(self, data):
@@ -64,7 +33,6 @@ class PollSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -82,3 +50,25 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         Token.objects.create(user=user)
         return user
+
+class ModuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Module
+        fields = '__all__'
+
+
+class EventSerializer(serializers.ModelSerializer):
+    module_list = ModuleSerializer(many=True, read_only=True, required=False)
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+
+class GuestSerializer(serializers.ModelSerializer):
+    event = EventSerializer()
+    user = UserSerializer()
+
+    class Meta:
+        model = Guest
+        fields = '__all__'

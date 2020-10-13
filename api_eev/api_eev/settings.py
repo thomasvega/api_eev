@@ -73,16 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api_eev.wsgi.application'
 
-############## REST_FRAMEWORK SETTINGS ##############
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES' : (
-#         'rest_framework.authentication.TokenAuthentication',
-#     ),
-#     'DEFAULT_PERMISSION_CLASSES': (
-#         'rest_framework.permissions.IsAuthenticated',
-#     )
-# }
-
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
