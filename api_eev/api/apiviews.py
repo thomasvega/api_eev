@@ -146,6 +146,9 @@ class GuestList(generics.ListCreateAPIView):
     serializer_class = GuestSerializer
 
     def get_queryset(self):
+        """
+        Retrieving all guests from an event id
+        """
         queryset = Guest.objects.filter(event_id=self.kwargs['event_pk'])
         return queryset
     
@@ -154,6 +157,9 @@ class GuestRetrieveDestroy(generics.RetrieveDestroyAPIView):
     serializer_class = GuestSerializer
 
     def get_object(self):
+        """
+        Retrieving a specific guest
+        """
         try:
             guest = Guest.objects.get(pk=self.kwargs['guest_pk'])
         except Guest.DoesNotExist:
@@ -161,6 +167,10 @@ class GuestRetrieveDestroy(generics.RetrieveDestroyAPIView):
         return guest
         
     def destroy(self, request, *args, **kwargs):
+        """
+        Overriding destroy method so it is possible only if you are the creator 
+        or if it yourself
+        """
         guest_list = Guest.objects.filter(pk=self.kwargs['event_pk'])
         for guest in guest_list:
             if not request.user == guest.creator or request.user == guest.user:
